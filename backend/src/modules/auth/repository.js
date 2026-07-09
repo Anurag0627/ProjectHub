@@ -2,7 +2,7 @@ const prisma = require("../../lib/prisma");
 
 const findByEmail = async (email) => {
     return await prisma.user.findUnique({
-        where: {email}
+        where: {email},
     });
 };
 
@@ -14,5 +14,5 @@ const createUser = async (userData) => {
 
 module.exports = {
     createUser,
-    findByEmail
+    findByEmail,
 }
