@@ -3,7 +3,7 @@ const authRepository = require("./repository");
 const {registerSchema, loginSchema}  = require("./validation");
 const { generateAccessToken } = require("../../utils/jwt");
 const AppError = require("../../utils/AppError");
-
+const logger = require("../../shared/logger/logger");
 
 
 const register = async (userData) => {
@@ -23,18 +23,19 @@ const register = async (userData) => {
     });
 
     return{
-        success: true,
-        message: "User registered successfully.",
-        data: {
             name: user.name,
             email: user.email
-        }
     };
 };
 
 const login = async (userData) => {
 
     const validatedData = loginSchema.parse(userData);
+
+    logger.info(
+        {email: validatedData.email},
+        "Login attempt"
+    );
 
     const user = await authRepository.findByEmail(validatedData.email);
     if(!user){
@@ -54,16 +55,12 @@ const login = async (userData) => {
     });
 
     return {
-        success: true,
-        message: "Login Successful.",
-        data: {
             user: {
                 id: user.id,
                 name: user.name,
                 email: user.email,
             },
             accessToken
-        }
     };
 };
 

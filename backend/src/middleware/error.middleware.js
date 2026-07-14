@@ -1,5 +1,6 @@
 const { ZodError } = require("zod");
 const AppError = require("../utils/AppError");
+const logger = require("../shared/logger/logger");
 
 const errorHandler = (err, req, res, next) => {
     console.error(err);
@@ -35,6 +36,15 @@ const errorHandler = (err, req, res, next) => {
             message: "Invalid token structure. Access denied."
         });
     }
+
+    logger.error(
+        {
+            err,
+            url: req.originalUrl,
+            method: req.method,
+        },
+        "Unhandled error"
+    );
 
     return res.status(500).json({
         success: false,

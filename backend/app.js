@@ -6,10 +6,12 @@ const app = express();
 
 const apiRoutes = require("./src/routes/index");
 const errorHandler = require("./src/middleware/error.middleware");
+const loggerMiddleware = require("./src/middleware/logger.middleware");
 
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+app.use(loggerMiddleware);
 
 
 app.get("/", (req, res) => {
