@@ -2,7 +2,7 @@ const { success } = require("zod");
 const repository = require("./repository");
 const validate = require("./validation");
 const auth = require("../auth/repository");
-const { organization } = require("../../lib/prisma");
+const organizationAccess = require("../../shared/access/organizationAccess");
 const AppError = require("../../utils/AppError");
 
 const createOrganization = async(userId, data) => {
@@ -26,6 +26,7 @@ const getMyOrganization = async(userId) => {
 const getOrganization = async(organizationId, currentUserId) => {
 
     validate.organizationIdSchema.parse({ organizationId });
+    
     const organization = await repository.getOrganizationById(organizationId);
 
     if(!organization){
@@ -45,15 +46,7 @@ const inviteMember = async(organizationId, currentUserId, data) => {
 
     const validatedData = validate.inviteMemberSchema.parse(data);
 
-    const organization = await repository.getOrganizationById(organizationId);
-    if(!organization){
-        throw new AppError("Organization not found.", 404);
-    }
-
-    const currentMembership = await repository.findMembership(currentUserId, organizationId);
-    if(!currentMembership){
-        throw new AppError("You are not member of this organization.", 403);
-    }
+    const currentMembership = await organizationAccess(organizationId, currentUserId);
 
     const allowedRoles = ["OWNER", "ADMIN"];
     if(!allowedRoles.includes(currentMembership.role)){

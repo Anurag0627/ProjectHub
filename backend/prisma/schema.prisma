@@ -18,6 +18,11 @@ enum OrganizationRole {
   MEMBER
 }
 
+enum ProjectStatus {
+  ACTIVE
+  ARCHIVED
+}
+
 model User {
   id          String    @id @default(cuid())
   name        String    
@@ -29,7 +34,8 @@ model User {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  memberships   OrganizationMember[]
+  memberships       OrganizationMember[]
+  createdProjects   Project[]
 }
 
 model Organization {
@@ -40,6 +46,7 @@ model Organization {
   updatedAt   DateTime  @updatedAt
 
   members     OrganizationMember[]
+  projects    Project[]
 }
 
 model OrganizationMember {
@@ -52,4 +59,22 @@ model OrganizationMember {
   organization  Organization        @relation(fields:[organizationId], references:[id])
 
   @@unique([userId, organizationId])
+}
+
+model Project {
+  id              String            @id @default(cuid())
+  name            String
+  description     String
+
+  organizationId  String
+  organization    Organization      @relation(fields:[organizationId], references:[id])
+
+  status          ProjectStatus     @default(ACTIVE)
+
+  createdById     String
+  createdBy       User              @relation(fields:[createdById], references:[id])
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
 }

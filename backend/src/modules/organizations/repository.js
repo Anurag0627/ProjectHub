@@ -1,6 +1,7 @@
 const { email } = require("zod");
 const prisma = require("../../lib/prisma");
 const auth = require("../auth/repository");
+const { use } = require("react");
 
 const createOrganization = async (userId, data) => {
     return await prisma.$transaction(async (tx) => {
@@ -47,7 +48,7 @@ const findMembership = async (userId, organizationId) => {
                 organizationId
             }
         }
-    })
+    });
 };
 
 const findMembershipByEmail = async(email, organizationId) => {
