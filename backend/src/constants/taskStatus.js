@@ -1,0 +1,21 @@
+const STATUS = {
+  TODO: "TODO",
+  IN_PROGRESS: "IN_PROGRESS",
+  IN_REVIEW: "IN_REVIEW",
+  DONE: "DONE"
+};
+
+const VALID_STATUS_TRANSITIONS = {
+    TODO: ["IN_PROGRESS"],
+
+    IN_PROGRESS: ["IN_REVIEW"],
+
+    IN_REVIEW: ["DONE","IN_REVIEW"],
+
+    DONE: []
+};
+
+module.exports = {
+  STATUS,
+  VALID_STATUS_TRANSITIONS
+};
